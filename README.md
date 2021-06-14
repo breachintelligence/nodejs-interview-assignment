@@ -66,21 +66,24 @@ We've provided the following instructions on how you can get a PostgreSQL databa
 
 Note that you do not need to use PostgreSQL via Docker and you are welcome to install PostgreSQL via other methods (e.g., via the Windows installer, RPMs, homebrew etc.).
 
-Pull down the postgres docker container (for more information on the PostgreSQL docker container please see https://hub.docker.com/_/postgres
+Pull down the postgres docker container (for more information on the PostgreSQL docker container please see https://hub.docker.com/_/postgres)
 
 ```bash
 docker pull postgres
 ```
 
-Launch the docker container.  Note that this command will map `/var/lib/postgresql/data`, which contains the database data in the container, to `/root/pgdata` on your local filesystem.  Please change the local file system path as appropriate.  This command will also set the `postgres` user password to `mysecretpassword`.  Finally, the command maps port 5432 in the container to port 5432 on the local operating system (port 5432 being the default PostgreSQL port) so that you can connect to the database from outside the container.
+Launch and initialize the PostgresQL docker container.  Note that this command will map `/var/lib/postgresql/data`, which contains the database data in the container, to `pgdata` on your local filesystem.  This command will also set the default `postgres` user password to `mysecretpassword`.  The command adds the `init-schema.sql` file to the container and uses it to initialize the database. Finally, the command maps port 5432 in the container to port 5432 on the local operating system (port 5432 being the default PostgreSQL port) so that you can connect to the database from outside the container.
+
+> You should run this command from inside the `nodejs-interview-assignment` repo that you cloned.
 
 ```bash
 docker run -d \
-    --name polarity-postgres \
-    -e POSTGRES_PASSWORD=mysecretpassword \
-    -v /root/pgdata:/var/lib/postgresql/data \
-    -p 5432:5432 \
-    postgres
+  --name polarity-postgres-interview  \
+  -e POSTGRES_PASSWORD=mysecretpassword \
+  -v "$(pwd)/pgdata:/var/lib/postgresql/data" \
+  -v "$(pwd)/sql/init-schema.sql:/docker-entrypoint-initdb.d/init-schema.sql" \ 
+  -p 5432:5432  \
+  postgres
 ```
 
 By default, you can use the following credentials to connect to PostgreSQL running in the docker container:
@@ -93,31 +96,13 @@ database: postgres
 port: 5432
 ```
 
-If you're using the command line `psql` tool you can connect to the postgreSQL instance with the following command:
-
-```bash
-PGPASSWORD=mysecretpassword psql -h localhost -p 5432 -U postgres
-```
-
-Initialize the schema and load some test data using the `init-schema.sql` file located in the `sql` directory of this repo.
-
-```bash
-PGPASSWORD=mysecretpassword psql -h localhost -p 5432 -U postgres -d postgres -f init-schema.sql
-```
-
-You can confirm the test data loaded with the following command:
-
-```bash
-PGPASSWORD=mysecretpassword psql -h localhost -p 5432 -U postgres -d postgres -c 'SELECT * FROM polarity.widgets'
-```
-
 # PostgreSQL Database Definitions
 
-The following walks through the SQL  used to initialize the database and are provided in case you wish to initialize your database in a different way than specified above.  The widget and brand tables are created in the `polarity` schema. 
+The following walks through the SQL  used to initialize the database and are provided in case you wish to initialize your database differently than specified above.  The widget and brand tables are created in the `polarity` schema. 
 
 The below statements are all included in the `sql/init-schema.sql` file.
 
-### Initial Setup
+### Database Schema
 
 ```postgresql
 -- All tables are created in the `polarity` schema
@@ -212,4 +197,24 @@ INSERT INTO polarity.widgets(id, widget_name, quantity, brand_id) VALUES (22, 'g
 
 -- Manually move our sequence to 6 since we explicitly set our primary key id
 ALTER SEQUENCE polarity.widgets_id_seq RESTART WITH 23;
+```
+
+# Additional psql commands
+
+The following `psql` commands may be useful if you are making use of the command line tool.  To connect to your PostgreSQL database you can run the following command:
+
+```bash
+PGPASSWORD=mysecretpassword psql -h localhost -p 5432 -U postgres
+```
+
+If you did not initialize your PostgreSQL database via the `docker run` command provided earlier, you can manually initialize it by running the `init-schema.sql` file like this:
+
+```bash
+PGPASSWORD=mysecretpassword psql -h localhost -p 5432 -U postgres -d postgres -f init-schema.sql
+```
+
+You can confirm the test data loaded with the following command:
+
+```bash
+PGPASSWORD=mysecretpassword psql -h localhost -p 5432 -U postgres -d postgres -c 'SELECT * FROM polarity.widgets'
 ```
