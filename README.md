@@ -25,20 +25,20 @@ The assignment is expected to take between 2 and 3 hours.  If you have additiona
 
 The following are the attributes for the widget
 
-* id -- serial (auto increments)
-* widget_name -- character varying(256)
-* quantity -- integer, the number of widgets that are available for purchase
+* id {serial}, auto incrementing primary key
+* widget_name {character varying(256)}, name of the widget
+* quantity {integer}, the number of widgets that are available for purchase
     * This value should not be less than zero (not enforced by the provided database schema by default)
-* brand_id -- serial foreign key, provides the associated brand for this widget
+* brand_id {integer}, foreign key, provides the associated brand for this widget
 
 
 ## Brand
 
 The following are the attributes for the brand
 
-* id -- serial (auto increments)
-* brand_name -- character varying(256)
-* last_sold_at -- timestamp without time zone, date when an associated widget was last sold
+* id {serial}, auto incrementing primary key
+* brand_name {character varying(256)}, name of the brand
+* last_sold_at {timestamp without time zone}, date when an associated widget was last sold
      * should update if an associated widget quantity decreases
 
 # Required REST Capabilities
@@ -86,6 +86,7 @@ docker run -d \
 By default, you can use the following credentials to connect to PostgreSQL running in the docker container:
 
 ```
+host: localhost
 user: postgres
 password: mysecretpassword
 database: postgres
@@ -98,7 +99,7 @@ If you're using the command line `psql` tool you can connect to the postgreSQL i
 PGPASSWORD=mysecretpassword psql -h localhost -p 5432 -U postgres
 ```
 
-Initialize the schema and load some test data using the `init-schema.sql` file.
+Initialize the schema and load some test data using the `init-schema.sql` file located in the `sql` directory of this repo.
 
 ```bash
 PGPASSWORD=mysecretpassword psql -h localhost -p 5432 -U postgres -d postgres -f init-schema.sql
@@ -114,7 +115,7 @@ PGPASSWORD=mysecretpassword psql -h localhost -p 5432 -U postgres -d postgres -c
 
 The following walks through the SQL  used to initialize the database and are provided in case you wish to initialize your database in a different way than specified above.  The widget and brand tables are created in the `polarity` schema. 
 
-The below statements are all included in the `init-schema.sql` file.
+The below statements are all included in the `sql/init-schema.sql` file.
 
 ### Initial Setup
 
