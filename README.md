@@ -4,7 +4,7 @@ Create an Express or Fastify based REST API for a Widget Store.
 
 The widget store has 1 or more widgets and each widget has a single brand. A brand can have multiple widgets. The store should query a PostgreSQL database (version 12+).  We have provided both a postgresql schema file and initial test data which can be used to seed the database.
 
-Please ensure your submission is representative of the code you would produce in a professional setting.
+Please ensure your submission is representative of the code you would produce professionally.
 
 The assignment is expected to take between 2 and 3 hours.  If you have additional items you would want to tackle but don't have time please feel free to provide that to us when submitting the assignment.
 
